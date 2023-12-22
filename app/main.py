@@ -21,8 +21,8 @@ def main():
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
 
+    client_connection.sendAll(response.encode())
 
-    client_connection.send(response.encode())
 
 if __name__ == "__main__":
     main()
