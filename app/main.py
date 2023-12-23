@@ -4,10 +4,15 @@ import socket
 status_codes = {200: 'OK', 404: 'Not Found'}
 
 
-def build_response(path, status, contentType):
+def build_response(path, status, contentType, header):
     path = path.split("/")
-    func = path[0]
-    body = "/".join(path[2:])
+    func = path[1]
+
+    if func == "echo":
+        body = "/".join(path[2:])
+    else:
+        body = header.split()[1]
+
     response = ("HTTP/1.1 " + str(status) + " " + status_codes[status] + "\r\n"
                 + "Content-Type: " + contentType + "\r\n"
                 + "Content-Length: " + str(len(body)) + "\r\n\r\n"
@@ -24,11 +29,13 @@ def main():
     request_data = client_connection.recv(1204)
     lines = request_data.decode().split("\r\n")
     method, path, version = lines[0].split()
+    hostPlaceholder, host = lines[1].split()
+    headerPlaceholder, header = lines[2].split()
 
     if path == "/" or path.startswith("/echo/"):
-        response = build_response(path, 200, "text/plain")
+        response = build_response(path, 200, "text/plain", lines[2])
     else:
-        response = build_response(path, 404, "text/plain")
+        response = build_response(path, 404, "text/plain", lines[2])
 
     client_connection.sendall(response.encode())
 
