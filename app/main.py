@@ -3,7 +3,7 @@ import socket
 import threading
 import os
 
-status_codes = {200: 'OK', 404: 'Not Found'}
+status_codes = {200: 'OK', 404: 'Not Found', 201: 'Created'}
 
 
 def build_response(body, status, content_type):
@@ -45,20 +45,35 @@ def process_request(client_connection, client_address, directory_path):
     # host_placeholder, host = lines[1].split()
     # header_placeholder, header = lines[2].split()
 
-    if path == "/" or path.startswith("/echo/"):
-        response = build_response(resolve_body(path, lines[2]), 200, "text/plain")
-    elif path.startswith("/files/"):
-        file_path = path.split("/")[2]
-        if not os.path.isfile(directory_path + file_path):
-            response = build_response(resolve_body(path, lines[2]), 404, "text/plain")
+    if method == "GET":
+        if path == "/" or path.startswith("/echo/"):
+            response = build_response(resolve_body(path, lines[2]), 200, "text/plain")
+        elif path.startswith("/files/"):
+            file_path = path.split("/")[2]
+            if not os.path.isfile(directory_path + file_path):
+                response = build_response(resolve_body(path, lines[2]), 404, "text/plain")
+            else:
+                f = open(directory_path + file_path, "r")
+                body = f.read()
+                response = build_response(body, 200, "application/octet-stream")
         else:
-            f = open(directory_path + file_path, "r")
-            body = f.read()
-            response = build_response(body, 200, "application/octet-stream")
+            response = build_response(resolve_body(path, lines[2]), 404, "text/plain")
     else:
-        response = build_response(resolve_body(path, lines[2]), 404, "text/plain")
+        file_path = path.split("/")[2]
+        print(lines)
+        request_body = lines[6]
+        print(request_body)
+        print(directory_path)
+        print(file_path)
+        f = open(directory_path + file_path, "w")
+        print("file_opened")
+        f.write(request_body)
+        print("written")
+        response = "HTTP/1.1 " + str(201) + " " + status_codes[201] + "\r\n"
+        print(response)
 
     client_connection.sendto(response.encode(), client_address)
+    print("sent")
 
 
 import sys
