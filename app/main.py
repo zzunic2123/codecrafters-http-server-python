@@ -60,20 +60,12 @@ def process_request(client_connection, client_address, directory_path):
             response = build_response(resolve_body(path, lines[2]), 404, "text/plain")
     else:
         file_path = path.split("/")[2]
-        print(lines)
         request_body = lines[6]
-        print(request_body)
-        print(directory_path)
-        print(file_path)
         f = open(directory_path + file_path, "w")
-        print("file_opened")
         f.write(request_body)
-        print("written")
-        response = "HTTP/1.1 " + str(201) + " " + status_codes[201] + "\r\n"
-        print(response)
+        response = build_response(request_body, 201, "application/octet-stream")
 
     client_connection.sendto(response.encode(), client_address)
-    print("sent")
 
 
 import sys
