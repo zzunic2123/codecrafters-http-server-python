@@ -15,6 +15,7 @@ def main():
     method, path, version = lines[0].split()
 
     print(lines)
+    print(path)
 
     response = ""
     if path == "/":
@@ -22,8 +23,7 @@ def main():
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
 
-
-    client_connection.sendAll(response.encode())
+    client_connection.sendall(response.encode())
 
 
 if __name__ == "__main__":
