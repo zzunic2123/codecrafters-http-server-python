@@ -1,38 +1,60 @@
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/fcff250f-cbb2-4b5c-8e79-cac323309784)](https://app.codecrafters.io/users/zzunic2123?r=2qF)
+# HTTP Server Implementation
 
-This is a starting point for Python solutions to the
-["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
+A multi-threaded HTTP server built from scratch in Python as part of the CodeCrafters tutorial series. Handles basic GET and POST requests with file operations.
 
-[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the
-protocol that powers the web. In this challenge, you'll build a HTTP/1.1 server
-that is capable of serving multiple clients.
+## Features
 
-Along the way you'll learn about TCP servers,
-[HTTP request syntax](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html),
-and more.
+- Multi-threaded request handling
+- Supports HTTP/1.1 protocol
+- Implements common HTTP methods:
+  - GET for resource retrieval
+  - POST for file creation
+- File operations with directory parameter
+- Proper HTTP status codes (200, 201, 404)
+- Content-Type and Content-Length headers
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Usage
 
-# Passing the first stage
+1. Start the server:
+`python server.py`
 
-The entry point for your HTTP server implementation is in `app/main.py`. Study
-and uncomment the relevant code, and push your changes to pass the first stage:
+2. With directory argument (for file operations):
+`python server.py --directory /path/to/files/`
 
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
-```
+## Endpoints
 
-Time to move on to the next stage!
+- `/` - Basic health check
+- `/echo/<message>` - Returns the message back
+- `/files/<filename>` - File operations:
+  - GET: Retrieves file contents
+  - POST: Creates/updates file
 
-# Stage 2 & beyond
+## Example Requests
 
-Note: This section is for stages 2 and beyond.
+Get echo response:
+`curl http://localhost:4221/echo/hello`
 
-1. Ensure you have `python (3.11)` installed locally
-1. Run `./your_server.sh` to run your program, which is implemented in
-   `app/main.py`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+Get file contents:
+`curl http://localhost:4221/files/sample.txt`
+
+Post file contents:
+`curl -X POST -d "file content" http://localhost:4221/files/sample.txt`
+
+## Technical Details
+
+- Uses Python's built-in `socket` module
+- Thread-per-request model
+- Handles basic HTTP headers
+- Simple request routing
+- File I/O operations
+
+## Requirements
+
+- Python 3.6+
+- No external dependencies
+
+## Notes
+
+- Developed as part of CodeCrafters HTTP Server Challenge
+- Basic implementation focused on core HTTP functionality
+- Not production-grade (missing many HTTP features)
